@@ -16,3 +16,5 @@ tsconfig.tsbuildinfo
 /package-lock.json
 /shots_v2/
 /sanity-shots.js
+/shots_live/
+/screenshots-live.js
