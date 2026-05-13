@@ -1,0 +1,100 @@
+'use client';
+
+import { Ship, MapPin, Plus, Star } from 'lucide-react';
+import { toast } from 'sonner';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { offers } from '@/lib/mock-data';
+import { cn } from '@/lib/utils';
+
+export function RecommendedOffers() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Recommended offers</CardTitle>
+        <p className="text-[11px] text-arrivia-slate-400">
+          Ranked by match with Margaret's preferences and history.
+        </p>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {offers.map((o) => (
+            <div
+              key={o.id}
+              className={cn(
+                'group relative flex flex-col rounded-xl border bg-white overflow-hidden transition-all',
+                o.highlight
+                  ? 'border-arrivia-coral-200 ring-1 ring-arrivia-coral-200/60 shadow-sm'
+                  : 'border-arrivia-slate-200 hover:border-arrivia-blue-200 hover:shadow-sm'
+              )}
+            >
+              <div className={cn(
+                'h-20 relative overflow-hidden flex items-end p-3',
+                o.highlight
+                  ? 'bg-gradient-to-br from-arrivia-coral-400 to-arrivia-coral-600'
+                  : 'bg-gradient-to-br from-arrivia-blue-500 to-arrivia-blue-700'
+              )}>
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white blur-xl" />
+                </div>
+                <Ship className="relative h-6 w-6 text-white/90" />
+                {o.highlight && (
+                  <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-semibold text-arrivia-coral-700 ring-1 ring-arrivia-coral-200">
+                    <Star className="h-2.5 w-2.5 fill-current" />
+                    Top match
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 p-3.5">
+                <div className="text-[10px] uppercase tracking-wide text-arrivia-slate-400">
+                  {o.ship}
+                </div>
+                <h4 className="text-sm font-semibold text-arrivia-slate-900 mt-0.5">
+                  {o.title}
+                </h4>
+                <p className="text-xs text-arrivia-slate-600 mt-1 flex items-start gap-1">
+                  <MapPin className="h-3 w-3 mt-0.5 shrink-0 text-arrivia-slate-400" />
+                  <span>{o.itinerary}</span>
+                </p>
+                <p className="text-xs text-arrivia-slate-600 mt-1">
+                  {o.suite}
+                </p>
+
+                {o.matchTag && (
+                  <Badge variant="coral" className="mt-2 text-[10px]">
+                    {o.matchTag}
+                  </Badge>
+                )}
+
+                <div className="mt-3 pt-3 border-t border-arrivia-slate-100 flex items-end justify-between gap-2">
+                  <div>
+                    <div className="text-[10px] text-arrivia-slate-400">Lead price</div>
+                    <div className="text-sm font-semibold text-arrivia-slate-900">
+                      {o.price}
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="mt-3 w-full"
+                  onClick={() =>
+                    toast.success('Added to itinerary', {
+                      description: `${o.title}, ${o.itinerary}`,
+                    })
+                  }
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add to itinerary
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
