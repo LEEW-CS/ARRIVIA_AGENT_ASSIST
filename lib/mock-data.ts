@@ -1,4 +1,13 @@
-import type { Connector, Member, Offer, Preference, TalkBubble, Trip } from './types';
+import type {
+  AuthType,
+  Connector,
+  ConnectorType,
+  Member,
+  Offer,
+  Preference,
+  TalkBubble,
+  Trip,
+} from './types';
 
 export const member: Member = {
   name: 'Margaret Chen',
