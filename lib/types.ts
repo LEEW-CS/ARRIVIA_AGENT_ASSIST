@@ -1,4 +1,4 @@
-export type ConnectorStatus = 'connected' | 'disconnected' | 'error';
+export type ConnectorStatus = 'connected' | 'disconnected' | 'error' | 'pending';
 
 export type ConnectorType =
   | 'Internal'
@@ -45,12 +45,17 @@ export interface Preference {
   iconKey: 'anchor' | 'bed' | 'ship' | 'plane' | 'seat' | 'wine' | 'passport';
   label: string;
   value: string;
+  isMissing?: boolean;
+  isInferred?: boolean;
 }
+
+export type ConfidencePillTone = 'success' | 'warn' | 'muted';
 
 export interface TalkBubble {
   stage: string;
   text: string;
   confidence: string;
+  confidenceTone?: ConfidencePillTone;
 }
 
 export interface Offer {
@@ -61,16 +66,53 @@ export interface Offer {
   suite: string;
   price: string;
   matchTag?: string;
+  matchTone?: 'coral' | 'muted' | 'warn';
   highlight?: boolean;
+  unavailable?: boolean;
 }
 
 export interface Member {
   name: string;
   membershipNumber: string;
-  tier: string;
+  tier: 'Platinum' | 'Gold' | 'Silver' | 'Member';
   memberSince: string;
   lifetimeValue: string;
   homeAirport: string;
+  homeAirportMissing?: boolean;
   pointsBalance: string;
   ivrIntent: string;
+  ivrIntentMissing?: boolean;
+  initials: string;
+}
+
+export type DataSourceStatus = 'connected' | 'pending' | 'error' | 'disconnected';
+
+export interface DataSource {
+  id: string;
+  label: string;
+  status: DataSourceStatus;
+  detail?: string;
+}
+
+export interface Alert {
+  level: 'warn' | 'error' | 'info';
+  title: string;
+  detail: string;
+}
+
+export interface Scenario {
+  id: string;
+  shortLabel: string;
+  longLabel: string;
+  tagline: string;
+  member: Member;
+  preferences: Preference[];
+  trips: Trip[];
+  talkTrack: TalkBubble[];
+  talkTrackTone: 'confident' | 'discovery';
+  offers: Offer[];
+  offersHeader: string;
+  offersSubheader: string;
+  dataSources: DataSource[];
+  alerts?: Alert[];
 }

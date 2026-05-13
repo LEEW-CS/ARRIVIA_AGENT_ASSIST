@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Phone } from 'lucide-react';
-import { member } from '@/lib/mock-data';
+import { Phone, HelpCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { Member } from '@/lib/types';
 
 function format(secs: number) {
   const h = Math.floor(secs / 3600);
@@ -13,13 +14,20 @@ function format(secs: number) {
   return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
 }
 
-export function CallStatusStrip() {
+interface CallStatusStripProps {
+  member: Member;
+}
+
+export function CallStatusStrip({ member }: CallStatusStripProps) {
   const [elapsed, setElapsed] = useState(134);
 
   useEffect(() => {
+    setElapsed(134);
     const t = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [member.membershipNumber]);
+
+  const intentMissing = member.ivrIntentMissing;
 
   return (
     <div className="flex items-center gap-4 rounded-full border border-arrivia-slate-200 bg-arrivia-cream-50 px-4 py-1.5">
@@ -52,7 +60,15 @@ export function CallStatusStrip() {
         <span className="text-[10px] uppercase tracking-wide text-arrivia-slate-400 shrink-0">
           IVR
         </span>
-        <span className="text-[11px] text-arrivia-slate-600 italic truncate">
+        <span
+          className={cn(
+            'text-[11px] truncate flex items-center gap-1',
+            intentMissing
+              ? 'italic text-amber-700'
+              : 'italic text-arrivia-slate-600'
+          )}
+        >
+          {intentMissing && <HelpCircle className="h-3 w-3" />}
           {member.ivrIntent}
         </span>
       </div>

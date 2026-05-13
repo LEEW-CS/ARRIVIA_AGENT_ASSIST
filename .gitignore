@@ -13,3 +13,5 @@ next-env.d.ts
 /build-demo-script.js
 /Arrivia_Agent_Assist_Demo_Script.docx
 /package-lock.json
+/shots_v2/
+/sanity-shots.js

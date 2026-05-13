@@ -1,15 +1,27 @@
 'use client';
 
-import { useState } from 'react';
-import { Copy, RefreshCw, Sparkles, Check } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Copy, RefreshCw, Sparkles, Check, Compass } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { talkTrack } from '@/lib/mock-data';
+import type { TalkBubble } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
-export function TalkTrack() {
+interface TalkTrackProps {
+  bubbles: TalkBubble[];
+  tone: 'confident' | 'discovery';
+}
+
+export function TalkTrack({ bubbles, tone }: TalkTrackProps) {
   const [regenerating, setRegenerating] = useState(false);
+  const [version, setVersion] = useState(0);
+
+  // reset copied/visual state when the underlying scenario changes
+  useEffect(() => {
+    setVersion((v) => v + 1);
+  }, [bubbles]);
 
   const handleRegenerate = () => {
     setRegenerating(true);
@@ -21,11 +33,23 @@ export function TalkTrack() {
     }, 1200);
   };
 
+  const isDiscovery = tone === 'discovery';
+
   return (
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-3">
-        <div>
-          <CardTitle className="text-base">Suggested talk track</CardTitle>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CardTitle className="text-base">
+              {isDiscovery ? 'Suggested discovery flow' : 'Suggested talk track'}
+            </CardTitle>
+            {isDiscovery && (
+              <Badge variant="warn" className="text-[10px]">
+                <Compass className="h-3 w-3" />
+                Discovery mode, limited history
+              </Badge>
+            )}
+          </div>
           <p className="text-[11px] text-arrivia-slate-400 mt-0.5 flex items-center gap-1">
             <Sparkles className="h-3 w-3 text-arrivia-coral-500" />
             Powered by Arrivia Symphony AI
@@ -42,19 +66,25 @@ export function TalkTrack() {
         </Button>
       </CardHeader>
       <CardContent className="pt-0 space-y-3">
-        {talkTrack.map((bubble, i) => (
-          <TalkBubble key={i} bubble={bubble} index={i} />
+        {bubbles.map((bubble, i) => (
+          <TalkBubbleCard key={`${version}-${i}`} bubble={bubble} index={i} />
         ))}
       </CardContent>
     </Card>
   );
 }
 
-function TalkBubble({
+const toneStyles = {
+  success: 'success',
+  warn: 'warn',
+  muted: 'muted',
+} as const;
+
+function TalkBubbleCard({
   bubble,
   index,
 }: {
-  bubble: { stage: string; text: string; confidence: string };
+  bubble: TalkBubble;
   index: number;
 }) {
   const [copied, setCopied] = useState(false);
@@ -68,6 +98,8 @@ function TalkBubble({
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const badgeVariant = toneStyles[bubble.confidenceTone ?? 'success'];
+
   return (
     <div className="group rounded-xl border border-arrivia-slate-100 bg-arrivia-cream-50/40 p-3.5 hover:border-arrivia-blue-200 hover:bg-white transition-colors">
       <div className="flex items-center justify-between gap-2 mb-2">
@@ -78,7 +110,7 @@ function TalkBubble({
           <span className="text-[11px] font-semibold uppercase tracking-wide text-arrivia-blue-700">
             {bubble.stage}
           </span>
-          <Badge variant="success" className="text-[10px]">
+          <Badge variant={badgeVariant} className={cn('text-[10px]')}>
             {bubble.confidence}
           </Badge>
         </div>

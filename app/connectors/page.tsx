@@ -11,14 +11,18 @@ import { ArriviaLogo } from '@/components/arrivia-logo';
 import { ConnectorCard } from '@/components/connector-card';
 import { ConnectorCatalogueModal } from '@/components/connector-catalogue-modal';
 import { ConnectorConfigDrawer } from '@/components/connector-config-drawer';
-import { connectors, catalogue, type CatalogueItem } from '@/lib/mock-data';
+import { getConnectors, catalogue, type CatalogueItem } from '@/lib/mock-data';
 
 function ConnectorsContent() {
   const params = useSearchParams();
   const focus = params.get('focus');
+  const scenarioId = params.get('scenario') === 'b' ? 'b' : 'a';
+  const connectors = useMemo(() => getConnectors(scenarioId), [scenarioId]);
 
   const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'connected' | 'disconnected' | 'error'>('all');
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'connected' | 'pending' | 'disconnected' | 'error'
+  >('all');
   const [catalogueOpen, setCatalogueOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerItem, setDrawerItem] = useState<CatalogueItem | null>(null);
@@ -32,10 +36,10 @@ function ConnectorsContent() {
   }, [focus]);
 
   const counts = useMemo(() => {
-    const c = { connected: 0, disconnected: 0, error: 0 };
+    const c = { connected: 0, pending: 0, disconnected: 0, error: 0 };
     connectors.forEach((x) => c[x.status]++);
     return c;
-  }, []);
+  }, [connectors]);
 
   const filtered = useMemo(() => {
     return connectors.filter((c) => {
@@ -43,7 +47,7 @@ function ConnectorsContent() {
       const matchStatus = statusFilter === 'all' || c.status === statusFilter;
       return matchQuery && matchStatus;
     });
-  }, [query, statusFilter]);
+  }, [query, statusFilter, connectors]);
 
   const handleSelect = (item: CatalogueItem) => {
     setCatalogueOpen(false);
@@ -74,7 +78,7 @@ function ConnectorsContent() {
       <header className="sticky top-0 z-30 border-b border-arrivia-slate-200 bg-white">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-4 px-6">
           <Link
-            href="/"
+            href={`/?scenario=${scenarioId}`}
             className="inline-flex items-center gap-1.5 text-sm text-arrivia-slate-600 hover:text-arrivia-blue-600 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -84,6 +88,9 @@ function ConnectorsContent() {
           <div className="flex items-center gap-2">
             <ArriviaLogo heightClass="h-7" />
             <Badge variant="muted">Connectors</Badge>
+            {scenarioId === 'b' && (
+              <Badge variant="warn">Scenario B view</Badge>
+            )}
           </div>
           <div className="flex-1" />
           <Button variant="primary" onClick={() => setCatalogueOpen(true)}>
@@ -128,6 +135,13 @@ function ConnectorsContent() {
               dotClass="bg-emerald-500"
             >
               Connected <span className="opacity-60">{counts.connected}</span>
+            </FilterPill>
+            <FilterPill
+              active={statusFilter === 'pending'}
+              onClick={() => setStatusFilter('pending')}
+              dotClass="bg-amber-500"
+            >
+              Pending <span className="opacity-60">{counts.pending}</span>
             </FilterPill>
             <FilterPill
               active={statusFilter === 'disconnected'}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MoreVertical, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { MoreVertical, CheckCircle2, AlertTriangle, XCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -19,6 +19,12 @@ const statusMeta = {
     label: 'Connected',
     className: 'text-emerald-600',
     dot: 'bg-emerald-500',
+  },
+  pending: {
+    icon: Loader2,
+    label: 'Pending sync',
+    className: 'text-amber-700',
+    dot: 'bg-amber-500',
   },
   disconnected: {
     icon: XCircle,

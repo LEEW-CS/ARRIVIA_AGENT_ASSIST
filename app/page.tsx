@@ -1,3 +1,7 @@
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { TopBar } from '@/components/top-bar';
 import { MemberProfile } from '@/components/member-profile';
 import { PreferencesPanel } from '@/components/preferences-panel';
@@ -5,24 +9,55 @@ import { TripHistory } from '@/components/trip-history';
 import { TalkTrack } from '@/components/talk-track';
 import { RecommendedOffers } from '@/components/recommended-offers';
 import { DataSourcesStrip } from '@/components/data-sources-strip';
+import { AlertBanner } from '@/components/alert-banner';
+import { ScenarioToggle } from '@/components/scenario-toggle';
+import { getScenario } from '@/lib/mock-data';
 
-export default function AgentConsole() {
+function AgentConsoleInner() {
+  const params = useSearchParams();
+  const scenario = getScenario(params.get('scenario'));
+
   return (
     <div className="min-h-screen flex flex-col">
-      <TopBar />
+      <TopBar
+        member={scenario.member}
+        scenarioId={scenario.id}
+        connectorsHref={`/connectors?scenario=${scenario.id}`}
+      />
 
       <main className="flex-1 mx-auto w-full max-w-[1600px] px-6 py-6">
+        <div className="mb-5 flex md:hidden">
+          <ScenarioToggle activeId={scenario.id} />
+        </div>
+
+        <div className="mb-4 flex items-center gap-3 text-[12px] text-arrivia-slate-500">
+          <span className="inline-flex items-center rounded-full bg-arrivia-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-arrivia-slate-600">
+            Scenario {scenario.id.toUpperCase()}
+          </span>
+          <span className="truncate">{scenario.tagline}</span>
+        </div>
+
+        {scenario.alerts && scenario.alerts.length > 0 && (
+          <div className="mb-5">
+            <AlertBanner alerts={scenario.alerts} />
+          </div>
+        )}
+
         <div className="grid grid-cols-12 gap-6">
           <section className="col-span-12 lg:col-span-5 space-y-5">
-            <MemberProfile />
-            <PreferencesPanel />
-            <TripHistory />
+            <MemberProfile member={scenario.member} />
+            <PreferencesPanel preferences={scenario.preferences} />
+            <TripHistory trips={scenario.trips} />
           </section>
 
           <section className="col-span-12 lg:col-span-7 space-y-5">
-            <TalkTrack />
-            <RecommendedOffers />
-            <DataSourcesStrip />
+            <TalkTrack bubbles={scenario.talkTrack} tone={scenario.talkTrackTone} />
+            <RecommendedOffers
+              offers={scenario.offers}
+              header={scenario.offersHeader}
+              subheader={scenario.offersSubheader}
+            />
+            <DataSourcesStrip sources={scenario.dataSources} scenarioId={scenario.id} />
           </section>
         </div>
       </main>
@@ -34,5 +69,13 @@ export default function AgentConsole() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function AgentConsole() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <AgentConsoleInner />
+    </Suspense>
   );
 }
