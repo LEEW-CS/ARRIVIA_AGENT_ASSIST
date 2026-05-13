@@ -6,6 +6,7 @@ out/
 .env*.local
 next-env.d.ts
 .vercel
+tsconfig.tsbuildinfo
 
 # local scratch, not for repo
 /shots/
