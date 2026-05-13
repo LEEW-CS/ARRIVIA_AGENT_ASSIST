@@ -7,6 +7,7 @@ import { ArrowLeft, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { ArriviaLogo } from '@/components/arrivia-logo';
 import { ConnectorCard } from '@/components/connector-card';
 import { ConnectorCatalogueModal } from '@/components/connector-catalogue-modal';
 import { ConnectorConfigDrawer } from '@/components/connector-config-drawer';
@@ -81,7 +82,7 @@ function ConnectorsContent() {
           </Link>
           <span className="h-5 w-px bg-arrivia-slate-200" />
           <div className="flex items-center gap-2">
-            <span className="text-xl font-semibold lowercase text-arrivia-blue-600">arrivia</span>
+            <ArriviaLogo heightClass="h-7" />
             <Badge variant="muted">Connectors</Badge>
           </div>
           <div className="flex-1" />

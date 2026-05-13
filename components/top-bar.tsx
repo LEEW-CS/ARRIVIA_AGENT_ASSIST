@@ -3,16 +3,15 @@
 import Link from 'next/link';
 import { Settings, Cable } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { ArriviaLogo } from './arrivia-logo';
 import { CallStatusStrip } from './call-status-strip';
 
 export function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-arrivia-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-6 px-6">
-        <Link href="/" className="flex items-center gap-3 shrink-0">
-          <span className="text-2xl font-semibold tracking-tight text-arrivia-blue-600 lowercase">
-            arrivia
-          </span>
+        <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="arrivia, home">
+          <ArriviaLogo heightClass="h-8" />
           <Badge variant="coral" className="hidden sm:inline-flex">
             Agent Assist, Demo
           </Badge>
