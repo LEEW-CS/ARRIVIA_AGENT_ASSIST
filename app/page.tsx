@@ -11,6 +11,8 @@ import { RecommendedOffers } from '@/components/recommended-offers';
 import { DataSourcesStrip } from '@/components/data-sources-strip';
 import { AlertBanner } from '@/components/alert-banner';
 import { ScenarioToggle } from '@/components/scenario-toggle';
+import { UpsellPanel } from '@/components/upsell-panel';
+import { PlatinumPitchPanel } from '@/components/platinum-pitch-panel';
 import { getScenario } from '@/lib/mock-data';
 
 function AgentConsoleInner() {
@@ -30,11 +32,11 @@ function AgentConsoleInner() {
           <ScenarioToggle activeId={scenario.id} />
         </div>
 
-        <div className="mb-4 flex items-center gap-3 text-[12px] text-arrivia-slate-500">
-          <span className="inline-flex items-center rounded-full bg-arrivia-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-arrivia-slate-600">
+        <div className="mb-4 flex items-start gap-3 text-[12px] text-arrivia-slate-500">
+          <span className="inline-flex items-center rounded-full bg-arrivia-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-arrivia-slate-600 shrink-0">
             Scenario {scenario.id.toUpperCase()}
           </span>
-          <span className="truncate">{scenario.tagline}</span>
+          <span className="leading-relaxed">{scenario.tagline}</span>
         </div>
 
         {scenario.alerts && scenario.alerts.length > 0 && (
@@ -52,6 +54,10 @@ function AgentConsoleInner() {
 
           <section className="col-span-12 lg:col-span-7 space-y-5">
             <TalkTrack bubbles={scenario.talkTrack} tone={scenario.talkTrackTone} />
+            <UpsellPanel items={scenario.upsell} header={scenario.upsellHeader} />
+            {scenario.platinumPitch && (
+              <PlatinumPitchPanel pitch={scenario.platinumPitch} />
+            )}
             <RecommendedOffers
               offers={scenario.offers}
               header={scenario.offersHeader}

@@ -8,22 +8,25 @@ import { scenarioList } from '@/lib/mock-data';
 interface ScenarioToggleProps {
   activeId: string;
   className?: string;
+  compact?: boolean;
 }
 
-export function ScenarioToggle({ activeId, className }: ScenarioToggleProps) {
+export function ScenarioToggle({ activeId, className, compact }: ScenarioToggleProps) {
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border border-arrivia-slate-200 bg-white p-0.5 shadow-sm',
+        'inline-flex items-center gap-0.5 rounded-full border border-arrivia-slate-200 bg-white p-0.5 shadow-sm',
         className
       )}
       role="tablist"
       aria-label="Demo scenario"
     >
-      <span className="hidden sm:flex items-center gap-1 pl-2.5 pr-0.5 text-[10px] uppercase tracking-wider text-arrivia-slate-400">
-        <Users className="h-3 w-3" />
-        Scenario
-      </span>
+      {!compact && (
+        <span className="hidden xl:flex items-center gap-1 pl-2.5 pr-1 text-[10px] uppercase tracking-wider text-arrivia-slate-400">
+          <Users className="h-3 w-3" />
+          Scenario
+        </span>
+      )}
       {scenarioList.map((s) => {
         const active = activeId === s.id;
         return (
@@ -33,7 +36,7 @@ export function ScenarioToggle({ activeId, className }: ScenarioToggleProps) {
             role="tab"
             aria-selected={active}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-full px-3 h-7 text-xs font-medium transition-colors',
+              'inline-flex items-center gap-1.5 rounded-full px-2.5 h-7 text-xs font-medium transition-colors',
               active
                 ? 'bg-arrivia-coral-500 text-white shadow-sm'
                 : 'text-arrivia-slate-600 hover:bg-arrivia-slate-50 hover:text-arrivia-slate-900'

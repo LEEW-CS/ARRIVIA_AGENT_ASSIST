@@ -30,9 +30,11 @@ export interface Connector {
   mcpTools?: string[];
 }
 
+export type TripKind = 'cruise' | 'flight' | 'hotel' | 'car' | 'insurance';
+
 export interface Trip {
   id: string;
-  kind: 'cruise' | 'flight';
+  kind: TripKind;
   title: string;
   details: string;
   supplier: string;
@@ -41,12 +43,24 @@ export interface Trip {
   preferred: boolean;
 }
 
+export type PrefStatus = 'on-file' | 'not-on-file' | 'feed-unavailable' | 'inferred';
+
+export type PreferenceIcon =
+  | 'anchor'
+  | 'bed'
+  | 'ship'
+  | 'plane'
+  | 'seat'
+  | 'wine'
+  | 'passport'
+  | 'car'
+  | 'shield';
+
 export interface Preference {
-  iconKey: 'anchor' | 'bed' | 'ship' | 'plane' | 'seat' | 'wine' | 'passport';
+  iconKey: PreferenceIcon;
   label: string;
   value: string;
-  isMissing?: boolean;
-  isInferred?: boolean;
+  status?: PrefStatus;
 }
 
 export type ConfidencePillTone = 'success' | 'warn' | 'muted';
@@ -56,7 +70,10 @@ export interface TalkBubble {
   text: string;
   confidence: string;
   confidenceTone?: ConfidencePillTone;
+  kind?: 'standard' | 'cross-sell' | 'capture-data' | 'pre-cruise' | 'platinum';
 }
+
+export type OfferKind = 'cruise' | 'hotel' | 'package';
 
 export interface Offer {
   id: string;
@@ -69,20 +86,57 @@ export interface Offer {
   matchTone?: 'coral' | 'muted' | 'warn';
   highlight?: boolean;
   unavailable?: boolean;
+  kind?: OfferKind;
 }
+
+export type MemberTier = 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
+
+export interface MemberAddress {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
+export interface MemberSocial {
+  platform: 'facebook' | 'instagram' | 'linkedin' | 'twitter';
+  handle: string;
+  url: string;
+}
+
+export type Ownership =
+  | {
+      kind: 'timeshare';
+      brand:
+        | 'Wyndham Destinations'
+        | 'Marriott Vacation Club'
+        | 'Hilton Grand Vacations'
+        | 'Disney Vacation Club'
+        | 'Hyatt Vacation Club';
+      since?: string;
+    }
+  | {
+      kind: 'business';
+      partner: 'American Express' | 'USAA' | 'Other';
+      programLabel?: string;
+    };
 
 export interface Member {
   name: string;
   membershipNumber: string;
-  tier: 'Platinum' | 'Gold' | 'Silver' | 'Member';
+  tier: MemberTier;
   memberSince: string;
+  tenureYears: number;
   lifetimeValue: string;
   homeAirport: string;
-  homeAirportMissing?: boolean;
+  homeAirportStatus?: PrefStatus;
   pointsBalance: string;
   ivrIntent: string;
   ivrIntentMissing?: boolean;
   initials: string;
+  address?: MemberAddress;
+  socials?: MemberSocial[];
+  ownership?: Ownership;
 }
 
 export type DataSourceStatus = 'connected' | 'pending' | 'error' | 'disconnected';
@@ -100,6 +154,31 @@ export interface Alert {
   detail: string;
 }
 
+export type UpsellCategory =
+  | 'flight'
+  | 'accommodation'
+  | 'car'
+  | 'insurance'
+  | 'upgrade'
+  | 'pre-cruise';
+
+export interface UpsellItem {
+  id: string;
+  category: UpsellCategory;
+  title: string;
+  pitch: string;
+  rationale?: string;
+  priceHint?: string;
+  highlight?: boolean;
+}
+
+export interface PlatinumPitch {
+  headline: string;
+  bullets: string[];
+  example: string;
+  ctaLine: string;
+}
+
 export interface Scenario {
   id: string;
   shortLabel: string;
@@ -115,4 +194,7 @@ export interface Scenario {
   offersSubheader: string;
   dataSources: DataSource[];
   alerts?: Alert[];
+  upsell: UpsellItem[];
+  upsellHeader: string;
+  platinumPitch?: PlatinumPitch;
 }

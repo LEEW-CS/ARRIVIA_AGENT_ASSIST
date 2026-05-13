@@ -1,6 +1,6 @@
 'use client';
 
-import { Ship, MapPin, Plus, Star, AlertTriangle } from 'lucide-react';
+import { Ship, MapPin, Plus, Star, AlertTriangle, Hotel } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,6 +33,7 @@ export function RecommendedOffers({ offers, header, subheader }: RecommendedOffe
 }
 
 function OfferCard({ offer: o }: { offer: Offer }) {
+  const KindIcon = o.kind === 'hotel' ? Hotel : Ship;
   return (
     <div
       className={cn(
@@ -56,7 +57,7 @@ function OfferCard({ offer: o }: { offer: Offer }) {
         <div className="absolute inset-0 opacity-20">
           <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white blur-xl" />
         </div>
-        <Ship className="relative h-6 w-6 text-white/90" />
+        <KindIcon className="relative h-6 w-6 text-white/90" />
         {o.highlight && !o.unavailable && (
           <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-semibold text-arrivia-coral-700 ring-1 ring-arrivia-coral-200">
             <Star className="h-2.5 w-2.5 fill-current" />
