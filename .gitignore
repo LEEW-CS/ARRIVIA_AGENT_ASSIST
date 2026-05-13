@@ -6,3 +6,9 @@ out/
 .env*.local
 next-env.d.ts
 .vercel
+
+# local scratch, not for repo
+/shots/
+/screenshots.js
+/build-demo-script.js
+/Arrivia_Agent_Assist_Demo_Script.docx
